@@ -15,10 +15,11 @@ Vagrant.configure("2") do |config|
       cp -v /vagrant/master/named.conf.options /etc/bind/
       cp -v /vagrant/master/named.conf.local /etc/bind/
       cp -v /vagrant/master/db.192.168.57.dns /var/lib/bind/
+      chown :bind /var/lib/bind/*.dns
       systemctl restart named
     SHELL
   end
-  
+
    config.vm.define "slave" do |slave|
      slave.vm.network "private_network", ip: "192.168.57.102"
      slave.vm.hostname= "venus.sistema.test"
