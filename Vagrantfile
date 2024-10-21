@@ -10,27 +10,27 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get install -y bind9 dnsutils
   SHELL
-    #master.vm.provision "shell", name: "master-dns", inline: <<-SHELL
-      #cp -v /vagrant/named /etc/default/
-      #cp -v /vagrant/named.conf.options /etc/bind
-      #cp -v /vagrant/named.conf.local /etc/bind
-      #cp -v /vagrant/dns.sri /var/lib/bind
-      #systemctl restart named
-    #SHELL
+    master.vm.provision "shell", name: "master-dns", inline: <<-SHELL
+      cp -v /vagrant/master/named /etc/default/
+      cp -v /vagrant/master/named.conf.options /etc/bind/
+      cp -v /vagrant/master/named.conf.local /etc/bind/
+      cp -v /vagrant/master/db.192.168.57.dns /var/lib/bind/
+      systemctl restart named
+    SHELL
   end
-  # config.vm.define "slave" do |slave|
-  #   slave.vm.network "private_network", ip: "192.168.57.102"
-  #   slave.vm.provision "shell", inline: <<-SHELL
-  #   echo "tierra.sistema.test" > /etc/hostname
-  #   apt-get update
-  #   apt-get install -y bind9 dnsutils
-  # SHELL
-  #     #slave.vm.provision "shell", name: "master-dns", inline: <<-SHELL
-  #     #cp -v /vagrant/named /etc/default/
-  #     #cp -v /vagrant/named.conf.options /etc/bind
-  #     #cp -v /vagrant/named.conf.local /etc/bind
-  #     #cp -v /vagrant/dns.sri /var/lib/bind
-  #     #systemctl restart named
-  #   #SHELL
-  # end
+  
+   config.vm.define "slave" do |slave|
+     slave.vm.network "private_network", ip: "192.168.57.102"
+     slave.vm.hostname= "venus.sistema.test"
+     slave.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y bind9 dnsutils
+  SHELL
+      slave.vm.provision "shell", name: "master-dns", inline: <<-SHELL
+      cp -v /vagrant/slave/named /etc/default/
+      cp -v /vagrant/slave/named.conf.options /etc/bind/
+      cp -v /vagrant/slave/named.conf.local /etc/bind/
+      systemctl restart named
+    SHELL
+  end
 end
